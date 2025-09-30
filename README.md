@@ -24,42 +24,6 @@ This project demonstrates how RSA encryption works and is hosted on **GitHub Pag
 3. Type a message in the box and click **Encrypt** → ciphertext will appear.
 4. Paste ciphertext into the box and click **Decrypt** → original message is restored.
 
----
-
-## 📝 Usage Example
-
-**Step 1: Generate Keys**
-You get a Public Key and Private Key (in Base64).
-
-**Step 2: Enter Message**
-
-```
-Hello RSA!
-```
-
-**Step 3: Encrypt → Output**
-
-```
-lI4aJk9t...FzP8y9H==
-```
-
-**Step 4: Decrypt → Output**
-
-```
-Hello RSA!
-```
-
----
-
-
-
-## 📚 Tech Stack
-
-* **HTML5**
-* **CSS3**
-* **JavaScript (Web Crypto API)**
-
----
 
 
 
