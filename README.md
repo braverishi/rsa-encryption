@@ -17,12 +17,6 @@ This project demonstrates how RSA encryption works and is hosted on **GitHub Pag
 
 ---
 
-## 📸 Screenshot
-
-![App Screenshot](screenshot.png)
-
----
-
 ## 🚀 How to Use
 
 1. Open the [live demo](https://braverishi.github.io/rsa-encryption/).
