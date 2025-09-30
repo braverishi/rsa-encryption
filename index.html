@@ -1,0 +1,134 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RSA Encryption Utility</title>
+  <style>
+    body {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #1e293b;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 400px;
+      text-align: center;
+    }
+    textarea, input {
+      width: 100%;
+      margin: 8px 0;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+    }
+    button {
+      background: #14b8a6;
+      border: none;
+      padding: 10px 16px;
+      margin-top: 8px;
+      border-radius: 6px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0d9488;
+    }
+    .result {
+      background: #0f172a;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 0.9em;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔐 RSA Encryption Utility</h2>
+    <p>Encrypt & decrypt text using RSA keys.</p>
+
+    <button onclick="generateKeys()">Generate RSA Keys</button>
+
+    <h3>Public Key</h3>
+    <textarea id="publicKey" readonly rows="4"></textarea>
+
+    <h3>Private Key</h3>
+    <textarea id="privateKey" readonly rows="4"></textarea>
+
+    <h3>Message</h3>
+    <textarea id="message" rows="3" placeholder="Enter message..."></textarea>
+
+    <button onclick="encryptMessage()">Encrypt</button>
+    <button onclick="decryptMessage()">Decrypt</button>
+
+    <h3>Result</h3>
+    <div id="result" class="result">Result will appear here...</div>
+  </div>
+
+  <script>
+    let publicKey, privateKey;
+
+    async function generateKeys() {
+      const keyPair = await window.crypto.subtle.generateKey(
+        {
+          name: "RSA-OAEP",
+          modulusLength: 2048,
+          publicExponent: new Uint8Array([1, 0, 1]),
+          hash: "SHA-256",
+        },
+        true,
+        ["encrypt", "decrypt"]
+      );
+
+      publicKey = keyPair.publicKey;
+      privateKey = keyPair.privateKey;
+
+      const exportedPublicKey = await window.crypto.subtle.exportKey("spki", publicKey);
+      const exportedPrivateKey = await window.crypto.subtle.exportKey("pkcs8", privateKey);
+
+      document.getElementById("publicKey").value = btoa(String.fromCharCode(...new Uint8Array(exportedPublicKey)));
+      document.getElementById("privateKey").value = btoa(String.fromCharCode(...new Uint8Array(exportedPrivateKey)));
+      document.getElementById("result").innerText = "Keys generated successfully!";
+    }
+
+    async function encryptMessage() {
+      const text = document.getElementById("message").value;
+      if (!text || !publicKey) {
+        alert("Please generate keys and enter a message first.");
+        return;
+      }
+      const encoded = new TextEncoder().encode(text);
+      const encrypted = await window.crypto.subtle.encrypt({ name: "RSA-OAEP" }, publicKey, encoded);
+      const encryptedBase64 = btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+      document.getElementById("result").innerText = encryptedBase64;
+    }
+
+    async function decryptMessage() {
+      const encryptedBase64 = document.getElementById("message").value;
+      if (!encryptedBase64 || !privateKey) {
+        alert("Please generate keys and paste encrypted text.");
+        return;
+      }
+      try {
+        const encryptedBytes = Uint8Array.from(atob(encryptedBase64), c => c.charCodeAt(0));
+        const decrypted = await window.crypto.subtle.decrypt({ name: "RSA-OAEP" }, privateKey, encryptedBytes);
+        const decoded = new TextDecoder().decode(decrypted);
+        document.getElementById("result").innerText = decoded;
+      } catch (e) {
+        document.getElementById("result").innerText = "❌ Decryption failed. Wrong input or key.";
+      }
+    }
+  </script>
+</body>
+</html>
+```
